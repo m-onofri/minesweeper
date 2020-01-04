@@ -92,34 +92,6 @@ function App() {
     return minedGrid;
   }
 
-  // function displayZeroTiles(currentGrid, r, c) {
-  //   if ((r - 1) >= 0 && (c - 1) >= 0 && !currentGrid[r-1][c-1].display) {
-  //     currentGrid[r-1][c-1].display = true;
-  //   }
-  //   if ((r - 1) >= 0 && !currentGrid[r-1][c].display) {
-  //     currentGrid[r-1][c].display = true;
-  //   }
-  //   if ((r - 1) >= 0 && (c + 1) < currentGrid[r].length && !currentGrid[r-1][c+1].display) {
-  //     currentGrid[r-1][c+1].display = true;
-  //   }
-  //   if ((c + 1) < currentGrid[r].length && !currentGrid[r][c+1].display) {
-  //     currentGrid[r][c+1].display = true;
-  //   }
-  //   if ((r + 1) < currentGrid.length && (c + 1) < currentGrid[r].length && !currentGrid[r+1][c+1].display) {
-  //     currentGrid[r+1][c+1].display = true;
-  //   }
-  //   if ((r + 1) < currentGrid.length && !currentGrid[r+1][c].display) {
-  //     currentGrid[r+1][c].display = true;
-  //   }
-  //   if ((r + 1) < currentGrid.length && (c - 1) >= 0 && !currentGrid[r+1][c-1].display) {
-  //     currentGrid[r+1][c-1].display = true;
-  //   }
-  //   if ((c - 1) >= 0 && !currentGrid[r][c-1].display) {
-  //     currentGrid[r][c-1].display = true;
-  //   }
-  //   return currentGrid;
-  // }
-
   function spreadZeroTiles(currentGrid, r, c) {
     if ((r - 1) >= 0 && (c - 1) >= 0 && currentGrid[r-1][c-1].content === 0 && !currentGrid[r-1][c-1].display) {
       currentGrid[r-1][c-1].display = true;
@@ -205,7 +177,6 @@ function App() {
         if (!currentGrid[row][column].display) {
           currentGrid[row][column].display = true;
           if (currentGrid[row][column].content === 0) {
-            //currentGrid = displayZeroTiles(currentGrid, parseInt(row), parseInt(column));
             currentGrid = spreadZeroTiles(currentGrid, parseInt(row), parseInt(column));
             currentGrid = displayTilesNearZero(currentGrid);
           }
@@ -230,11 +201,11 @@ function App() {
           return (
             <div
               onClick={(e)=> handleClick(e)}
-              className="item"
+              className={`item item-${g.content} ${g.display ? 'display' : ''}`}
               style={{backgroundColor: g.hint ? 'red' :  g.display ? 'white' : 'lightgray'}}
               id={`${Math.floor(i / 10)}-${i % 10}`}
               key={`${Math.floor(i / 10)}-${i % 10}`}
-              >{g.display ? g.content : ""}
+              ><p>{g.display ? g.content : ""}</p>
             </div>
           );      
         })}
