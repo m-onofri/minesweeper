@@ -4,12 +4,14 @@ import './App.css';
 function App() {
   const [grid, setGrid] = useState([]);
   const [playingGame, setplayingGame] = useState(false);
+  const [isGameOver, setisGameOver] = useState(false);
 
   useEffect(() => {
     const myGrid = createGrid(10);
     const myRandomNumbers = randomNumbersArray(20);
     const newGrid = setMines(myGrid, myRandomNumbers);
     setGrid(calculateMines(newGrid));
+    setisGameOver(false);
   },[playingGame]);
 
   function createGrid(length) {
@@ -173,6 +175,7 @@ function App() {
         currentGrid.forEach(row => {
           row.forEach(tile =>  tile.display = true);
         });
+        setisGameOver(true);
       } else {
         if (!currentGrid[row][column].display) {
           currentGrid[row][column].display = true;
@@ -190,11 +193,16 @@ function App() {
     <div className="App">
       <div id="controller">
         <div id="remainingMines">
-          {20 - (grid.flat().filter(i => i.hint).length)}
+          <p>{20 - (grid.flat().filter(i => i.hint).length)}</p>
         </div>
         <button
+          id="resetGame"
+          className={!isGameOver ? 'gameOn' : 'gameOver'}
           onClick={(e)=> setplayingGame(!playingGame)}
-        >Reset</button>
+        ></button>
+        <div id="timer">
+          <p>Timer</p>
+        </div>
       </div>
       <div id="container">
         {grid.flat().map((g, i) => {

@@ -9,7 +9,7 @@
   grid-template-rows: repeat(10, 40px);
   grid-row-gap: 1px;
   grid-column-gap: 1px;
-  margin: 4rem auto;
+  margin: auto;
   border: 5px solid gray;
 }
 
@@ -29,7 +29,7 @@
 }
 
 .item-1 {
-  color: blue;
+  color: cornflowerblue;
 }
 
 .item-2 {
@@ -40,12 +40,51 @@
   color: red;
 }
 
+.item-4 {
+  color: blue;
+}
+
 .item-0 {
   color: transparent;
 }
 
 .item-M.display{
   background: url(bomb.png);
+  color: transparent;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+#controller {
+  width: 410px;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: gray;
+  border: 5px solid gray;
+  border-bottom: 0px;
+
+}
+
+#remainingMines,
+#timer {
+  flex-basis: 20%;
+  border: 2px solid black;
+  background-color: white;
+}
+
+#resetGame {
+  flex-basis: 15%;
+  padding: 0;
+}
+
+#resetGame.gameOn{
+  background: url('smile.png');
+  background-size: cover;
+}
+
+#resetGame.gameOver{
+  background: url('sad.png');
+  background-size: cover;
 }
