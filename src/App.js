@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
+import Timer from './Timer.js';
 import './App.css';
 
 function App() {
   const [grid, setGrid] = useState([]);
   const [playingGame, setplayingGame] = useState(false);
   const [isGameOver, setisGameOver] = useState(false);
+  const [isTimerOn, setIsTimerOn] = useState('end');
 
   useEffect(() => {
     const myGrid = createGrid(10);
@@ -13,6 +15,16 @@ function App() {
     setGrid(calculateMines(newGrid));
     setisGameOver(false);
   },[playingGame]);
+
+  function checkEndGame() {
+    let result = true;
+    grid.flat().forEach(t => {
+      if (t.content !== "M" && !t.display) {
+        result = false;
+      }
+    });
+    return result;
+  }
 
   function createGrid(length) {
     let index = length;
@@ -165,28 +177,40 @@ function App() {
   }
 
   function handleClick(e) {
-    let currentGrid = [...grid];
-    const row = e.target.id.split("-")[0];
-    const column = e.target.id.split("-")[1];
-    if (e.metaKey) {
-      currentGrid[row][column].hint = !currentGrid[row][column].hint;
-    } else {
-      if (currentGrid[row][column].content === "M") {
-        currentGrid.forEach(row => {
-          row.forEach(tile =>  tile.display = true);
-        });
-        setisGameOver(true);
+    if (e.target.id) {
+      let currentGrid = [...grid];
+      const row = e.target.id.split("-")[0];
+      const column = e.target.id.split("-")[1];
+      if (e.metaKey) {
+        currentGrid[row][column].hint = !currentGrid[row][column].hint;
       } else {
-        if (!currentGrid[row][column].display) {
-          currentGrid[row][column].display = true;
-          if (currentGrid[row][column].content === 0) {
-            currentGrid = spreadZeroTiles(currentGrid, parseInt(row), parseInt(column));
-            currentGrid = displayTilesNearZero(currentGrid);
+        if (currentGrid[row][column].content === "M") {
+          currentGrid.forEach(row => {
+            row.forEach(tile =>  tile.display = true);
+          });
+          setisGameOver(true);
+          setIsTimerOn('end');
+        } else {
+          if (!currentGrid[row][column].display) {
+            setIsTimerOn('start');
+            currentGrid[row][column].display = true;
+            if (currentGrid[row][column].content === 0) {
+              currentGrid = spreadZeroTiles(currentGrid, parseInt(row), parseInt(column));
+              currentGrid = displayTilesNearZero(currentGrid);
+            }
           }
         }
       }
+      setGrid(currentGrid);
+      if (checkEndGame()) {
+        setIsTimerOn('end');
+        currentGrid.forEach(row => {
+          row.forEach(tile =>  tile.display = true);
+        });
+        setGrid(currentGrid);
+      }
+      console.log(checkEndGame());
     }
-    setGrid(currentGrid);
   }
 
   return (
@@ -198,11 +222,13 @@ function App() {
         <button
           id="resetGame"
           className={!isGameOver ? 'gameOn' : 'gameOver'}
-          onClick={(e)=> setplayingGame(!playingGame)}
+          onClick={(e)=> {
+              setplayingGame(!playingGame);
+              setIsTimerOn('reset');
+            }
+          }
         ></button>
-        <div id="timer">
-          <p>Timer</p>
-        </div>
+        <Timer isTimerOn={isTimerOn} />
       </div>
       <div id="container">
         {grid.flat().map((g, i) => {
